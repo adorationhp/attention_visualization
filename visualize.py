@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import argparse
 from pathlib import Path
 from sys import stdin
@@ -16,6 +16,8 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument('--input', type=argparse.FileType('r'), default=stdin,
                         help="Sockeye's translation output of type 'translation_with_alignment_matrix'")
     parser.add_argument('--annotate', action='store_true')
+    parser.add_argument('--sentence-id', type=int, default=-1,
+                        help='Only visualize specific sentence id.')
     parser.add_argument('--output', type=str, required=True,
                         help='Output directory.')
     return parser
@@ -63,9 +65,10 @@ if __name__ == '__main__':
     output_directory = Path(args.output)
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    i = 0
     for trans_att in translation_attentions(trans_att_text):
-        i += 1
+        if args.sentence_id != -1 and trans_att.sentence_id != args.sentence_id:
+            continue
+
         f, ax = plt.subplots(figsize=trans_att.attention_matrix.shape)
 
         sns.heatmap(trans_att.attention_matrix.transpose(),
