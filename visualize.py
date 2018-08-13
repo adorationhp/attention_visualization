@@ -18,6 +18,8 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument('--annotate', action='store_true')
     parser.add_argument('--sentence-id', type=int, default=-1,
                         help='Only visualize specific sentence id.')
+    parser.add_argument('--layer', type=int, default=-1,
+                        help='Used for title and filename.')
     parser.add_argument('--output', type=str, required=True,
                         help='Output directory.')
     return parser
@@ -85,9 +87,9 @@ if __name__ == '__main__':
         ax.yaxis.set_tick_params(left=False)
         ax.xaxis.set_label_position('top')
         ax.set(xlabel='Source', ylabel='Target')
-        f.suptitle('Sentence-ID: {}'.format(trans_att.sentence_id))
+        f.suptitle('Sentence-ID: {}. Layer: {}'.format(trans_att.sentence_id, args.layer))
 
-        output_file = str(output_directory) + '/sentence-{}.svg'.format(trans_att.sentence_id)
+        output_file = str(output_directory) + '/sentence-{}.layer-{}.svg'.format(trans_att.sentence_id, args.layer)
         f.savefig(output_file, bbox_inches='tight', dpi=300)
 
         plt.close(f)
